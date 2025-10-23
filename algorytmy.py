@@ -161,6 +161,29 @@ def aGwiazdka(start, end, vertex_edges, edges, vertex_coords):
 
     return path, final_distance
 
+def save_to_graph(plik_wyjsciowy, vertex_coords, vertex_edges, edges):
+
+    title = "Vertex_ID X Y Neighbours_IDs\n"
+
+    with open(plik_wyjsciowy, 'w', encoding='utf-8') as file:
+        file.write(title)
+
+        for id_w, (x, y) in vertex_coords.items():
+
+            neighbor_ids = set()
+
+            for edge_id in vertex_edges[id_w]:
+                edge = edges[edge_id]
+
+                neighbor_id = edge["id_to"]
+                if neighbor_id != id_w:
+                    neighbor_ids.add(neighbor_id)
+
+            sorted_neighbors = sorted(list(neighbor_ids))
+            neighbors_list_str = ' '.join(map(str, sorted_neighbors))
+            line = f"{id_w}\t{x}\t{y}\t{neighbors_list_str}\n"
+            file.write(line)
+
     # DO SPRAWDZENIA SOBIE ---------------------------------------
 
 
@@ -208,3 +231,4 @@ plt.figure(figsize=(10, 8))
 nx.draw(G, pos, node_size=40, node_color="red", edge_color="gray", with_labels=True, font_size=8)
 plt.title("graf drog BDOT")
 plt.show()
+
