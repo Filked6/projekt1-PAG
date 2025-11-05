@@ -46,34 +46,6 @@ graph = create_graph(shp, layer, tolerance)
 
 ########################
 
-##### Funkcje temp #####
-
-# Ta funkcja nie działa, i tak powinna iść do wymiany
-def save_to_graph(plik_wyjsciowy, vertex_coords, vertex_edges, edges):
-
-    title = "Vertex_ID X Y Neighbours_IDs\n"
-
-    with open(plik_wyjsciowy, 'w', encoding='utf-8') as file:
-        file.write(title)
-
-        for id_w, (x, y) in vertex_coords.items():
-
-            neighbor_ids = set()
-
-            for edge_id in vertex_edges[id_w]:
-                edge = edges[edge_id]
-
-                neighbor_id = edge["id_to"]
-                if neighbor_id != id_w:
-                    neighbor_ids.add(neighbor_id)
-
-            sorted_neighbors = sorted(list(neighbor_ids))
-            neighbors_list_str = ' '.join(map(str, sorted_neighbors))
-            line = f"{id_w}\t{x}\t{y}\t{neighbors_list_str}\n"
-            file.write(line)
-
-########################
-
 #### Kod tymczasowy ####
 
 print(f"Liczba wierzchołków: {len(graph.nodes)}")
@@ -115,4 +87,6 @@ print("sciezka:", [n.id for n in path])
 print("Dlugosc trasy:", distance, "metrow")
 print(f"Czas działania algorytmu: {gw_time:.15f} sekundy\n")
 
-########################
+####### Zapis ##########
+
+save_to_graph("grafek.txt", graph)
