@@ -101,4 +101,23 @@ def create_graph(workspace, layer, tolerance = 0.5):
         gc.newEdge(row.FID, length, p1, p2)
         
     return gc.graph
-    
+
+#Zapisywanie do grafu
+def save_to_graph(plik_wyjsciowy, graph):
+    node = graph.nodes
+    title = "Vertex_ID\tX\tY\tNeighbours_IDs\n"
+
+    with open(plik_wyjsciowy, 'w', encoding='utf-8') as file:
+        file.write(title)
+
+        for _, numN in node.items():
+            nodeEdges = numN.edges
+            neighbors = []
+
+            for _, end_node in nodeEdges:
+                endN = end_node.id
+                neighbors.append(str(endN))
+
+            fullString = " ".join(neighbors)
+            line = f"{numN.id}\t{numN.x}\t{numN.y}\t{fullString}\n"
+            file.write(line)
