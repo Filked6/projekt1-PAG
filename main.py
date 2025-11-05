@@ -19,13 +19,14 @@ maleDane = "Drogi_Bydgoszcz_Male"
 testKierunek = "maleKierunek"
 
 # Personalne adresy plików (trzeba to jakoś lepiej rozwiązać)
-maciek = r"C:/Users/Szybi/Documents/Studia/PAG/projekt1-PAG/Dane/"
+maciek_home = r"C:/Users/Szybi/Documents/Studia/PAG/projekt1-PAG/Dane/"
+maciek_stud = r"C:/Users/Maciek/Documents/Studia/PAG/projekt1-PAG/Dane/"
 julka = r""
 filip = r"C:/Studia/Sezon_3/Programowania_aplikacji_geoinformacyjnych/Projekt/Dane/"
 
 # Stałe do wczytywania warstwy
 layer = maleDane    # tu wybrany zestaw danych
-user = maciek       # tu wasz adres danych
+user = maciek_stud       # tu wasz adres danych
 
 shp = user + layer + ".shp" # tak powstaje adres pliku .shp, to nie stała, ale zostawiam tutaj, bo jest używane w tym samym miejscu co layer
 
