@@ -88,7 +88,7 @@ def start_location(g: Graph):
     #Zwracamy wspórzędne punktu oraz słownik ze współrzędnymi punktów w układzie Mercatora
     return place_coords_latlon, vertex_coords_4326
 
-# Wyświetlanie w html 
+# Wyświetlanie w html
 def web_visualisation(g: Graph, path):
     place_coords_latlon, vertex_coords_4326 = start_location(g)
     #Tworzenie mapy

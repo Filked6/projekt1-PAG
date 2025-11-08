@@ -71,7 +71,7 @@ end = graph.nodes[120]
  t_start_dijkstra = time.time()
  path, distance = dijkstra(start, end)
  t_end_dijkstra = time.time()
- dijk_time = t_end_dijkstra - t_start_dijkstra
+ dijk_time = t_end_dijkstra - t_start_dijkstra 
  print("\nDijkstra")
  print("Najkrotsza trasa od", start.id, "do", end.id, ":")
  print("sciezka:", [n.id for n in path])

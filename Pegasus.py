@@ -1,6 +1,6 @@
 """
 Plik zawiera obsługę serverową w stylu aplikacji z biblioteki flask
-
+Nasłuchujemy użytkownika hehe (mimo to że to my)
 Tzw. Mózg wszystkiego
 """
 import flask
