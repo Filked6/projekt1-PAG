@@ -9,11 +9,10 @@ import webbrowser
 import folium
 import numpy as np
 from pyproj import Transformer
-
 from Graph import *
 
 # Rysunek z NX
-def NX_visualisation(g: Graph):
+def nx_visualisation(g: Graph):
     G = nx.Graph()
         
     # Wierzchołki
@@ -66,28 +65,34 @@ def calculate_nearest_point(x_coords, y_coords, g: Graph):
 
     return nearest_node_id, min_distance
 
-# Wyświetlanie w html 
-def Web_visualisation(g: Graph, path):
+#Obliczenie miejsca, w którym mamy dane
+def start_location(g: Graph):
     transformer = Transformer.from_crs("EPSG:2180", "EPSG:4326", always_xy=True)
 
     # Transformacja współrzędnych na WGS 84
     vertex_coords_4326 = {}
     for node_id, node in g.nodes.items():
-            lon, lat = transformer.transform(node.x, node.y)
-            vertex_coords_4326[node_id] = (lon, lat)
-    
+        lon, lat = transformer.transform(node.x, node.y)
+        vertex_coords_4326[node_id] = (lon, lat)
+
     min_lat = min(v[1] for v in vertex_coords_4326.values())
     max_lat = max(v[1] for v in vertex_coords_4326.values())
     min_lon = min(v[0] for v in vertex_coords_4326.values())
     max_lon = max(v[0] for v in vertex_coords_4326.values())
-    
-    #Obliczanie środka dla całego obszaru
+
+    # Obliczanie środka dla całego obszaru
     lat = (min_lat + max_lat) / 2
     lon = (min_lon + max_lon) / 2
 
     place_coords_latlon = [lat, lon]
+    #Zwracamy wspórzędne punktu oraz słownik ze współrzędnymi punktów w układzie Mercatora
+    return place_coords_latlon, vertex_coords_4326
+
+# Wyświetlanie w html 
+def web_visualisation(g: Graph, path):
+    place_coords_latlon, vertex_coords_4326 = start_location(g)
     #Tworzenie mapy
-    m = folium.Map(location=place_coords_latlon, zoom_start=15) # Zoom trzeba zautomatyzować
+    m = folium.Map(location=place_coords_latlon, zoom_start=15) # Zoom trzeba zautomatyzować TODO
     #Punty dla początka i końca w celu wyświetlenia markerów
     start_id = path[0].id
     end_id = path[-1].id
