@@ -75,7 +75,7 @@ class GraphCreator:
         self.index[p] = n                      # dodawanie wierzchołka do index
         return self.index[p]
         
-    def newEdge(self, id, length, p1, p2):
+    def newEdge(self, id, length, p1, p2, directed = False):
         # tworzenie wierzchołków
         n1 = self.newNode(p1)
         n2 = self.newNode(p2)
@@ -86,11 +86,12 @@ class GraphCreator:
 
         # łączenie krawędzi i wierzchołków
         n1.edges.append((e, n2))
-        n2.edges.append((e, n1))
+        if not directed:
+            n2.edges.append((e, n1))
             
 def create_graph(workspace, layer, tolerance = 0.5):
     gc = GraphCreator(tolerance)
-
+    max_speed = 0
     # wczytywanie danych
     arcpy.env.workspace = workspace
     cursor = arcpy.SearchCursor(layer)
@@ -98,8 +99,29 @@ def create_graph(workspace, layer, tolerance = 0.5):
         length = round(row.Shape.length, 2)
         p1 = (row.Shape.firstPoint.X, row.Shape.firstPoint.Y)
         p2 = (row.Shape.lastPoint.X, row.Shape.lastPoint.Y)
-        gc.newEdge(row.FID, length, p1, p2)
-        
+
+        kierunek = row.getValue("KIERUNEK")
+        predkosc = row.getValue("PREDKOSC")
+        if not predkosc or predkosc <= 0: #domyslna predkosc, gdyby ewentualnie brak danych
+            predkosc = 50.0
+
+        if predkosc > max_speed:
+            max_speed = predkosc
+
+        v = predkosc / 3.6
+        cost = length / v
+
+
+        if kierunek == 0:
+            gc.newEdge(row.FID, length, p1, p2, directed = False)
+        elif kierunek == 1:
+            gc.newEdge(row.FID, length, p1, p2, directed = True)
+        elif kierunek == 2:
+            gc.newEdge(row.FID, length, p2, p1, directed = True)
+
+
+    gc.graph.max_speed_kmh = max_speed if max_speed > 0 else 130.0
+            
     return gc.graph
 
 #Zapisywanie do grafu

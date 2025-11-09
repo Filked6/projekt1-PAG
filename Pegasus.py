@@ -42,7 +42,7 @@ def calculate_route():
     start = graph.nodes[node_start]
     end = graph.nodes[node_end]
 
-    path, path_distance = aGwiazdka(start, end)
+    path, cost = aGwiazdka(start, end, graph)
     transformer_to_latlon = Transformer.from_crs("EPSG:2180", "EPSG:4326", always_xy=True)
 
     route_coords = []

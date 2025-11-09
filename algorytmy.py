@@ -50,16 +50,23 @@ def dijkstra(start: Node, end: Node):
         return None, math.inf
     return path, d[end]
 
-def heurystyka(node1: Node, node2: Node):
-    return math.sqrt((node2.x - node1.x) ** 2 + (node2.y - node1.y) ** 2) # odległość euklidejska
+def heurystyka(node1: Node, node2: Node, graph):
 
-def aGwiazdka(start: Node, end: Node):
+    dx = node2.x - node1.x
+    dy = node2.y - node1.y
+    distance_m = math.sqrt(dx**2 + dy**2)
+
+    max_speed_kmh = getattr(graph, "max_speed_kmh", 120)
+    v_max = max_speed_kmh/ 3.6
+    return distance_m / v_max
+
+def aGwiazdka(start: Node, end: Node, graph):
     S = set()                           # odwiedzone
     Q = [(0, start)]                    # kolejka priorytetowa
     h = {}                              # zbiór heurystyk
     d = {}                              # zbiór odległości
     p = {}                              # zbiór poprzedników
-    h[start] = heurystyka(start, end)
+    h[start] = heurystyka(start, end, graph)
     d[start] = 0
     p[start] = None
 
@@ -74,16 +81,15 @@ def aGwiazdka(start: Node, end: Node):
             break
 
         for e, u in v.edges:            # sąsiad u, po drugiej stronie krawędzi e
-            length = e.cost
-
+            time_cost = e.cost
             if u in S:                  # zabezpieczenie przed wejściem na odwiedzony wierzchołek
                 continue
 
-            new_d = d[v] + length
+            new_d = d[v] + time_cost
             if not u in d or new_d < d[u]:
                 d[u] = new_d
                 p[u] = v
-                f_u = new_d + heurystyka(u, end)
+                f_u = new_d + heurystyka(u, end, graph)
                 heapq.heappush(Q, (f_u, u))
 
     # Rekonstrukcja ścieżki
