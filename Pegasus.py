@@ -33,6 +33,7 @@ def calculate_route():
     data = flask.request.json
     point1 = data['point1'] # [lat, lon]
     point2 = data['point2'] # [lat, lon]
+    route_type = data['route_type']
 
     graph = flask.current_app.config['GRAPH']
     #Obliczanie najbliższego wierzchołka względem naszego klikniętego punktu
@@ -42,7 +43,7 @@ def calculate_route():
     start = graph.nodes[node_start]
     end = graph.nodes[node_end]
 
-    path, cost = aGwiazdka(start, end, graph)
+    path, cost = aGwiazdka(start, end, graph, route_type)
     transformer_to_latlon = Transformer.from_crs("EPSG:2180", "EPSG:4326", always_xy=True)
 
     route_coords = []
