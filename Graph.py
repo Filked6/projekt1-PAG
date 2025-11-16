@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 '''
-    Klasy obsługujące obiektowe podejście do grafu, obecnie jest to kod dostarczony przez prowadzącego zmodyfikowany w niewielkim stopniu.
+    Klasy obsługujące obiektowe podejście do grafu, obecnie jest to kod dostarczony przez prowadzącego 
+    Copyright: dr inż. Jacek Bernard Marciniak
+    
+    zmodyfikowany dla celów zadania
 
     Prawdopodobnie nie będzie już tu dużo zmian.
 '''
@@ -25,7 +28,7 @@ class Edge:
         self.cost = cost            # waga krawędzi   
         self.start = start          # z wierzchołka
         self.end = end              # do wierzchołka
-        self.true_geom = true_geom  # lista współrzędnych (x, y)
+        self.true_geom = true_geom  # lista współrzędnych (x, y) -- dodana przez zespół 
         
     def __repr__(self):
         sid = self.start.id if self.start is not None else "None"
@@ -47,13 +50,13 @@ class GraphCreator:
         self.graph = Graph()        # nowy graf
         self.new_id = 0             # żeby przypisać współrzędne wierzchołkom
         self.index = {}             # index: (x, y) -> Node
-        self.tolerance = tolerance  # tolerancja dociągania wierzchołków
+        self.tolerance = tolerance  # tolerancja dociągania wierzchołków -- dodana przez zespół
         
     def getNewId(self):
         self.new_id = self.new_id + 1
         return self.new_id        
     
-    def nearbyNode(self, p):
+    def nearbyNode(self, p):    # funkcja znajdowania pobliskiego wierzchołka -- dodana przez zespół
         x, y = p
         candidates = []
         for fx in [math.floor, math.ceil]:
@@ -63,7 +66,7 @@ class GraphCreator:
 
         return candidates
 
-    def newNode(self, p):
+    def newNode(self, p):                      # funkcja tworzenia nowego wierzchołka w grafie -- znacznie zmieniona przez zespół na potrzebę "dociągania"
         candidates = self.nearbyNode(p)        # dociąganie "na 4 strony świata" 
         for key in candidates:
             if key in self.index:
@@ -87,12 +90,16 @@ class GraphCreator:
 
         # łączenie krawędzi i wierzchołków
         n1.edges.append((e, n2))
-        if not directed:
+        if not directed:                        # obsługa krawędzi jednokierunkowych -- dodana przez zespół
             n2.edges.append((e, n1))
             
-def create_graph(workspace, layer, tolerance = 0.5):
+# funkcja tworząca graf -- zmodyfikowana przez zespół poprzez dodanie:
+#   -tolerancji (dociągania do pobliskich wierzchołków w celu eliminacji niespójności danych)
+#   -obsługi prędkości na trasach
+#   -zapisu rzeczywistej geometrii trasy
+def create_graph(workspace, layer, tolerance = 0.5):        
     gc = GraphCreator(tolerance)
-    max_speed = 0
+    max_speed = 0                                  
     # wczytywanie danych
     arcpy.env.workspace = workspace
     cursor = arcpy.SearchCursor(layer)
