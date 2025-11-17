@@ -2,34 +2,10 @@
 '''
     Tu mają się znaleźć ostatecznie funkcje służące rysowaniu dróg na mapie, na razie są tu nasze dwie formy rysowania grafu.
 '''
-
-import networkx as nx
-import matplotlib.pyplot as plt
-import webbrowser
-import folium
 import numpy as np
 from pyproj import Transformer
 from Graph import *
 from math import hypot
-
-# Rysunek z NX
-def nx_visualisation(g: Graph):
-    G = nx.Graph()
-        
-    # Wierzchołki
-    for node_id, node in g.nodes.items():
-        G.add_node(node_id, pos=(node.x, node.y))
-
-    # Krawędzie
-    for edge_id, edge in g.edges.items():
-        G.add_edge(edge.start.id, edge.end.id, weight=edge.cost)
-
-    # Pozycje dla rysunku
-    pos = {node_id: (node.x, node.y) for node_id, node in g.nodes.items()}
-
-    nx.draw(G, pos, node_size=40, node_color="red", edge_color="gray", with_labels=True, font_size=8)
-    plt.axis('equal')
-    plt.show()
 
 #Liczenie odległości pomiędzy wierzchołkami
 def distance_to_point(start_node, end_node):
@@ -89,64 +65,8 @@ def start_location(g: Graph):
     #Zwracamy wspórzędne punktu oraz słownik ze współrzędnymi punktów w układzie Mercatora
     return place_coords_latlon, vertex_coords_4326
 
-# Wyświetlanie w html
-def web_visualisation(g: Graph, path):
-    place_coords_latlon, vertex_coords_4326 = start_location(g)
-    #Tworzenie mapy
-    m = folium.Map(location=place_coords_latlon, zoom_start=15)
-    #Punty dla początka i końca w celu wyświetlenia markerów
-    start_id = path[0].id
-    end_id = path[-1].id
-
-    lon_start, lat_start = vertex_coords_4326[start_id]
-    lon_end, lat_end = vertex_coords_4326[end_id]
-    location_start = [lat_start, lon_start]
-    location_end = [lat_end, lon_end]
-    
-    #Rysowanie linii trasy
-    for e in g.edges.values():
-        id1 = e.start
-        id2 = e.end
-
-        lon1, lat1 = vertex_coords_4326[id1.id]
-        lon2, lat2 = vertex_coords_4326[id2.id]
-        if id1 in path and id2 in path:
-            folium.PolyLine(
-                locations=[[lat1, lon1], [lat2, lon2]],
-                color="red",
-                weight=5,
-                opacity=1
-            ).add_to(m)
-
-    #Rysowanie markerów początka i końca
-    folium.Marker(
-        location=location_start,
-        tooltip="Start",
-        icon=folium.Icon(color='black', icon='flag', prefix='fa')
-    ).add_to(m)
-
-    folium.Marker(
-        location=location_end,
-        tooltip="Koniec",
-        icon=folium.Icon(color='blue', icon='flag', prefix='fa')
-    ).add_to(m)
-    """
-    for vertex_id, (lon, lat) in vertex_coords_4326.items():
-        folium.CircleMarker(
-            location=[lat, lon],
-            radius=3,
-            color="black",
-            fill=True,
-            fill_color="black",
-            fill_opacity=1.0,
-            popup=f"ID: {vertex_id}"
-        ).add_to(m)
-    """
-    #Zapis i otwarcie w przeglądarce
-    m.save("mapka.html")
-    webbrowser.open_new_tab("mapka.html")
-
-def rebuild_route(start, path_edges):
+#Składanie z powrotem geometrii ścieżki
+def rebuild_route(start, path):
     transformer = Transformer.from_crs("EPSG:2180", "EPSG:4326", always_xy=True)
 
     full_route = []
@@ -156,7 +76,7 @@ def rebuild_route(start, path_edges):
     prev_y = start.y
 
     #Przechodzenie przez każdą ścieżkę w celu pozyskania współrzędnych punktów i zamiany ich na układ Leafletowy
-    for edge in path_edges:
+    for edge in path:
         points = edge.true_geom 
 
         # Kontrola kierunku geometrii i ew. odwracanie

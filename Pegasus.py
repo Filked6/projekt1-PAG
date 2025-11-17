@@ -10,7 +10,6 @@ import os
 from flask import Flask
 from View import *
 from algorytmy import *
-from pyproj import Transformer
 #Stworzenie instancji aplikacji FLask, która jest serverem
 app = Flask(__name__)
 
@@ -29,8 +28,6 @@ def index():
     m.get_root().html.add_child(folium.Element(script_tag))
     return m._repr_html_()
 
-
-
 #Funkcja służąca do obliczania trasy (Akceptuje tylko POST, czyli wysyłanie danych)
 @app.route('/calculate',methods=['POST'])
 def calculate_route():
@@ -47,11 +44,11 @@ def calculate_route():
     start = graph.nodes[node_start]
     end = graph.nodes[node_end]
 
-    path_edges, cost,  = aGwiazdka(start, end, graph, route_type)
+    path, cost,  = aGwiazdka(start, end, graph, route_type)
 
-    # path_edges jest listą krawędzi grafu, więc musimy tylko poskładać z tego geometrię :))
+    # path jest listą krawędzi grafu, więc musimy tylko poskładać z tego geometrię :))
     # Tworzymy z tego listę ponieważ tylko tak Leaflet tak to potrafi obsłużyć :/ It is how it is
-    route_coords = rebuild_route(start, path_edges)
+    route_coords = rebuild_route(start, path)
 
     #Zwracamy naszą drogę i punkty początek, koniec jako plik JSONowy
     return flask.jsonify({

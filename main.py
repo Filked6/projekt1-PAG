@@ -80,45 +80,6 @@ def build_config():
         "tolerance": args.tolerance 
     }
 
-#### Kod tymczasowy ####
-
-#print(f"Liczba wierzchołków: {len(graph.nodes)}")
-#print(f"Liczba krawędzi: {len(graph.edges)}")
-# print(graph)
-
-########################
-"""
-# Wierzchołki początku i końca
-start = graph.nodes[73]
-end = graph.nodes[120]
-
-#### Test Dijkstry ####
-
- t_start_dijkstra = time.time()
- path, distance = dijkstra(start, end)
- t_end_dijkstra = time.time()
- dijk_time = t_end_dijkstra - t_start_dijkstra 
- print("\nDijkstra")
- print("Najkrotsza trasa od", start.id, "do", end.id, ":")
- print("sciezka:", [n.id for n in path])
- print("Dlugosc trasy:", distance, "metrow")
- print(f"Czas działania algorytmu: {dijk_time:.15f} sekundy\n")
-
-########################
-
-####### Test A* ########
-
-t_start_gwiazdka = time.time()
-path, distance = aGwiazdka(start, end)
-t_end_gwiazdka = time.time()
-gw_time = t_end_gwiazdka - t_start_gwiazdka
-print("\nA*")
-print("Najkrotsza trasa od", start.id, "do", end.id, ":")
-print("sciezka:", [n.id for n in path])
-print("Dlugosc trasy:", distance, "metrow")
-print(f"Czas działania algorytmu: {gw_time:.15f} sekundy\n")
-"""
-
 ###### Kod główny ######
 
 #Otwieramy przeglądarę i dajemy jej czas aby server zdążył się odpalić
@@ -143,15 +104,13 @@ if __name__ == '__main__':
     # Zapis
     # save_to_graph("grafek.txt", graph)
     
-    #utworzenie wątku, który pozwala na to, że app i open_browser działa w tym samym momencie inaczej albo by się otwierało
+    #utworzenie wątku, który pozwala na to, że app i open_browser działa w tym samym momencie inaczej, albo by się otwierało
     #przed włączeniem serwera albo nie uruchomiło by się wcale bo zaczęło by działać app, dopóki się go nie zatrzyma
     threading.Thread(target=open_browser, args=(URL,)).start()
     
-    #Dodajemy nasz graf dla aplikacji Flaskowegj
+    #Dodajemy nasz graf dla aplikacji Flaskowej
     app.config['GRAPH'] = graph
     
     #Uruchomienie serwera, debug=False pozwala na brak restartu gdy sobie 'grzebiemy' w kodzie
     app.run(host=HOST, port=PORT, debug=False)
 
-#nx_visualisation(graph)
-# web_visualisation(graph, path)
