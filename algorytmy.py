@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 '''
-    W tym pliku umieszczamy funkcje będące implementacjami algorytmów wyszukiwania drogi, ew funkcje pomocnicze.
+    W tym pliku umieszczamy funkcje będące implementacjami algorytmów wyszukiwania drogi, ew. funkcje pomocnicze.
 '''
 
 import math
 import heapq
 
-from Graph import *
+from Graph import Node, Graph
 
+#### Algorytm Dijkstra -- nie używany i nieaktualny
 def dijkstra(start: Node, end: Node):
     S = set()                           # odwiedzone
     Q = [(0, start)]                    # kolejka priorytetowa
@@ -50,7 +51,7 @@ def dijkstra(start: Node, end: Node):
         return None, math.inf
     return path, d[end]
 
-def heurystyka(node1: Node, node2: Node, graph, route_type):
+def heurystyka(node1: Node, node2: Node, graph: Graph, route_type: str):
 
     dx = node2.x - node1.x
     dy = node2.y - node1.y
@@ -63,7 +64,7 @@ def heurystyka(node1: Node, node2: Node, graph, route_type):
     elif route_type == "shortest":
         return distance_m
 
-def aGwiazdka(start: Node, end: Node, graph, route_type):
+def aGwiazdka(start: Node, end: Node, graph: Graph, route_type: str):
     S = set()                           # odwiedzone
     Q = [(0, start)]                    # kolejka priorytetowa
     h = {}                              # zbiór heurystyk
@@ -98,20 +99,17 @@ def aGwiazdka(start: Node, end: Node, graph, route_type):
                 heapq.heappush(Q, (f_u, u))
 
     # Rekonstrukcja ścieżki
-    path = []
-    path_edges = []              
+    path = []              
     v = end
     while v is not None:
-        path.append(v)
         if(p_edge[v]):
-            path_edges.append(p_edge[v])
+            path.append(p_edge[v])
         v = p[v]
     path.reverse()
-    path_edges.reverse()
 
     if not end in d:                    # obsługa braku ścieżki  
-        return None, math.inf, None
-    return path, d[end], path_edges
+        return None, math.inf
+    return path, d[end]
 
 
 

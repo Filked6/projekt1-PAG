@@ -47,7 +47,7 @@ def calculate_route():
     start = graph.nodes[node_start]
     end = graph.nodes[node_end]
 
-    path, cost, path_edges = aGwiazdka(start, end, graph, route_type)
+    path_edges, cost,  = aGwiazdka(start, end, graph, route_type)
 
     # path_edges jest listą krawędzi grafu, więc musimy tylko poskładać z tego geometrię :))
     # Tworzymy z tego listę ponieważ tylko tak Leaflet tak to potrafi obsłużyć :/ It is how it is
